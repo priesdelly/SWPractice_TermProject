@@ -21,6 +21,9 @@ connectDB();
 //Route
 const auth = require("./routes/auth");
 const user = require("./routes/user");
+const company = require("./routes/company");
+
+
 const app = express();
 
 app.use(cors({
@@ -59,6 +62,7 @@ const PORT = process.env.PORT || 5002;
 //route setup
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", user);
+app.use("/api/v1/company", company);
 
 app.use((error, req, res, next) => {
   // Check the error is a validation error

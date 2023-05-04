@@ -2,36 +2,42 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.protect = async (req, res, next) => {
-    let token;
+  let token;
 
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
-    }
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  }
 
-    if (!token || token === 'null') {
-        return res.status(401).json({success: false, message: 'Not authorize to access route'});
-    }
+  if (!token || token === 'null') {
 
-    try {
-        //verify
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return res.status(401).json({ success: false, message: 'Not authorize to access route' });
+  }
 
-        console.log(decoded);
+  try {
+    //verify
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
 
-        req.user = await User.findById(decoded.id);
+    next();
 
-        next();
-    } catch (error) {
-        console.log(error.stack);
-        return res.status(401).json({success: false, message: 'Not authorize to access route'});
-    }
+  } catch (error) {
+    console.log(error.stack);
+
+    return res.status(401).json({ success: false, message: 'Not authorize to access route' });
+  }
 }
 
-exports.authorize = (...roles)=>{
-    return (req,res,next)=>{
-        if(!roles.includes(req.user.role)){
-            return res.status(403).json({success:false, message:`User role ${req.user.role} is not authorized to access this route`});
-        }
-        next();
+exports.authorize = (...roles) => {
+
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({
+        success: false,
+        message: `User role ${ req.user.role } is not authorized to access this route`
+      });
     }
+
+    next();
+
+  }
 }

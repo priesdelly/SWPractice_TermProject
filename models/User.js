@@ -30,16 +30,17 @@ const UserSchema = new mongoose.Schema({
     enum: [ 'user', 'admin' ],
     default: 'user',
   },
-  resetPasswordToken: String,
-  resetDateExpire: Date,
+  // resetPasswordToken: String,
+  // resetDateExpire: Date,
   createAt: {
     type: Date,
     default: Date.now,
   },
   function: {
     type: String,
-    default: 'A'
-  }
+    default: 'A',
+    select: false,
+  },
 });
 
 UserSchema.pre('save', async function (next) {

@@ -1,7 +1,6 @@
 const express = require('express');
 const { Validator } = require("express-json-validator-middleware");
-
-const { profile, updateRole } = require('../controllers/user');
+const { profile, updateRole, addStaff } = require('../controllers/user');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 
