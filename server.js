@@ -9,17 +9,16 @@ const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
-const hpp = require('hpp'); 
+const hpp = require('hpp');
 
 //Load env vars
-dotenv.config({path: './config/config.env'});
+dotenv.config({ path: './config/config.env' });
 
 //Connect to database
 connectDB();
 
 //Route
 const auth = require("./routes/auth");
-
 // const hospitals = require('./routes/hospitals');
 // const appointments = require('./routes/appointments');
 
@@ -78,15 +77,12 @@ const swaggerOptions = {
 
 //Controller setup
 app.use("/api/v1/auth", auth);
-
 // app.use('/api/v1/hospitals', hospitals);
 // app.use('/api/v1/appointments', appointments);
 
-app.use('/', function (req, res) {
-    res.redirect('/api-docs');
+const server = app.listen(PORT, () => {
+    console.log(`Server running in ${process.env.NODE_ENV}  mode on port ${PORT}`);
 });
-
-const server = app.listen(PORT, console.log('Server running in ', process.env.NODE_ENV, ' mode on port ', PORT));
 
 //Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {

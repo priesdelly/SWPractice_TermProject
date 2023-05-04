@@ -1,26 +1,30 @@
 const User = require('../models/User');
 
+//@desc     Register user
+//@route    GET /api/v1/auth/register
+//@access   Public
 exports.register = async (req, res, next) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, tel } = req.body;
         //Create User
         const user = await User.create({
             name,
             email,
             password,
-            role,
+            tel,
         });
 
-        // const token = user.getSignedJwtToken();
-        // res.status(200).json({success: true, token});
-
         sendTokenResponse(user, 200, res)
+
     } catch (error) {
         res.status(400).json({ success: false });
         console.log(error.stack);
     }
 };
 
+//@desc     Login user
+//@route    GET /api/v1/auth/login
+//@access   Public
 exports.login = async (req, res, next) => {
     try {
         const { email, password } = req.body;
@@ -43,10 +47,8 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ success: false, msg: 'Invalid credentials' });
         }
 
-        //Create token
-        // const token = user.getSignedJwtToken();
-        // res.status(200).json({success:true, token});
         sendTokenResponse(user, 200, res);
+
     } catch (err) {
         return res.status(401).json({ success: false, msg: 'Cannot convert email or password to string' });
     }
@@ -64,21 +66,20 @@ const sendTokenResponse = (user, statusCode, res) => {
 
     res.status(statusCode).cookie('token', token, options).json({
         success: true,
-        //add for frontend
         _id: user._id,
         name: user.name,
         email: user.email,
-        //end for frontend
         token
     });
 }
 
+//@desc     Get current user profile
+//@route    GET /api/v1/auth/me
+//@access   Private
 exports.getMe = async (req, res, next) => {
     const user = await User.findById(req.user.id);
     res.status(200).json({ success: true, data: user });
 }
-
-
 
 //@desc     Log user out / clear cookie
 //@route    GET /api/v1/auth/logout
