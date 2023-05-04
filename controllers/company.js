@@ -4,7 +4,7 @@ const Staff = require('../models/Staff');
 
 //@desc     Register company
 //@route    POST /api/v1/company/register
-//@access   private
+//@access   Private
 exports.register = async (req, res, next) => {
   try {
     const { name, address, desc, website, tel } = req.body;
@@ -17,16 +17,16 @@ exports.register = async (req, res, next) => {
     });
 
     res.status(201).json({ success: true, data: company });
-  } catch (error) {
-    console.log(error.stack);
+  } catch (err) {
+    console.log(err);
     res.status(400).json({ success: false });
   }
 };
 
 //@desc     Get company profile
 //@route    GET /api/v1/company/:id
-//@access   public
-exports.getProfile = async (req, res, next) => {
+//@access   Public
+exports.getCompanyProfile = async (req, res, next) => {
   try {
     const companyId = req.params.id;
     const company = await Company.find({
@@ -38,21 +38,108 @@ exports.getProfile = async (req, res, next) => {
       return res.status(404);
     }
 
-    delete company[0].function;
-
     return res.status(200).json({
       success: true,
       data: company[0]
     });
-  } catch (error) {
-    console.log(error.stack);
+  } catch (err) {
+    console.log(err.stack);
     res.status(500);
+  }
+};
+
+//@desc     Update company profile
+//@route    PUT /api/v1/company/:id
+//@access   Private
+exports.updateCompanyProfile = async (req, res, next) => {
+  try {
+    const company = await Company.findByIdAndUpdate(req.params.id, req.body);
+
+    if (!company) {
+      return res.status(400).json({
+        success: false,
+        msg: 'Invalid company identify'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+    });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "Can't update company profile"
+    });
+  }
+};
+
+//@desc     Delete company profile
+//@route    Delete /api/v1/company/:id
+//@access   Private
+exports.deleteCompanyProfile = async (req, res, next) => {
+  try {
+    const company = await Company.findByIdAndUpdate(req.params.id, {
+      "function": "D"
+    });
+    if (!company) {
+      return res.status(400).json({
+        success: false,
+        msg: 'Invalid company identify'
+      });
+    }
+
+    //TODO
+    // - change all job to D
+    // - change all appointment to D
+
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "Can't update company profile"
+    });
+  }
+};
+
+//@desc     Get list staff of company
+//@route    Get /api/v1/company/:id/staff
+//@access   Private
+exports.getStaff = async (req, res, next) => {
+  try {
+
+    const staff = await Staff.find({
+      "companyId": req.params.id
+    });
+
+    const userIds = staff.map(staff => staff.userId.toString());
+    const users = await User.find({
+      "_id": { $in: userIds }
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: users
+    });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "Can't add staff"
+    });
   }
 };
 
 //@desc     Register staff to company
 //@route    POST /api/v1/company/:id/staff
-//@access   private
+//@access   Private
 exports.addStaff = async (req, res, next) => {
   try {
 
@@ -93,10 +180,9 @@ exports.addStaff = async (req, res, next) => {
   }
 };
 
-
 //@desc     Delete staff from company
 //@route    DELETE /api/v1/company/:id/staff
-//@access   private
+//@access   Private
 exports.deleteStaff = async (req, res, next) => {
   try {
 

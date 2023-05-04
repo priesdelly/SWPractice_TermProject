@@ -9,8 +9,10 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token || token === 'null') {
-
-    return res.status(401).json({ success: false, message: 'Not authorize to access route' });
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorize to access route'
+    });
   }
 
   try {
@@ -20,10 +22,12 @@ exports.protect = async (req, res, next) => {
 
     next();
 
-  } catch (error) {
-    console.log(error.stack);
-
-    return res.status(401).json({ success: false, message: 'Not authorize to access route' });
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json({
+      success: false,
+      message: 'Not authorize to access route'
+    });
   }
 }
 
@@ -36,8 +40,6 @@ exports.authorize = (...roles) => {
         message: `User role ${ req.user.role } is not authorized to access this route`
       });
     }
-
     next();
-
   }
 }
