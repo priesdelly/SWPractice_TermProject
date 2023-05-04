@@ -16,26 +16,30 @@ const UserSchema = new mongoose.Schema({
             'Please add a valid email',
         ],
     },
-    role: {
-        type: String,
-        enum: ['user', 'company', 'admin'],
-        default: 'user',
-    },
-    tel: {
-        type: String,
-    },
-    password: {
-        type: String,
-        required: [true, 'Please add a password'],
-        minLength: 6,
-        select: false,
-    },
-    resetPasswordToken: String,
-    resetDateExpire: Date,
-    createAt: {
-        type: Date,
-        default: Date.now,
-    },
+  tel: {
+    type: String,
+  },
+  password: {
+    type: String,
+    required: [ true, 'Please add a password minimum 6 character' ],
+    minLength: 6,
+    select: false,
+  },
+  role: {
+    type: String,
+    enum: [ 'user', 'admin' ],
+    default: 'user',
+  },
+  resetPasswordToken: String,
+  resetDateExpire: Date,
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
+  function: {
+    type: String,
+    default: 'A'
+  }
 });
 
 UserSchema.pre('save', async function (next) {

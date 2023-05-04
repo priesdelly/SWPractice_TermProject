@@ -1,4 +1,5 @@
 const express = require('express');
+const { Validator, ValidationError } = require("express-json-validator-middleware");
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/db');
@@ -19,14 +20,12 @@ connectDB();
 
 //Route
 const auth = require("./routes/auth");
-// const hospitals = require('./routes/hospitals');
-// const appointments = require('./routes/appointments');
-
+const user = require("./routes/user");
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
 }));
 
 //Body parser
@@ -46,8 +45,8 @@ app.use(xss());
 
 //Rate Limiting
 const limiter = rateLimit({
-    windowsMs: 10 * 60 * 1000, //10 mins
-    max: 100
+  windowsMs: 10 * 60 * 1000, //10 mins
+  max: 100
 });
 
 app.use(limiter);
@@ -57,36 +56,29 @@ app.use(hpp());
 
 const PORT = process.env.PORT || 5002;
 
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'FutureFist API',
-            version: '1.0.0',
-            description: 'FutureFist API'
-        },
-        servers: [
-            {
-                url: 'http://localhost:' + PORT + '/api/v1'
-            }
-        ],
-    },
-    apis: ['./routes/*.js'],
-};
-
-
-//Controller setup
+//route setup
 app.use("/api/v1/auth", auth);
-// app.use('/api/v1/hospitals', hospitals);
-// app.use('/api/v1/appointments', appointments);
+app.use("/api/v1/user", user);
+
+app.use((error, req, res, next) => {
+  // Check the error is a validation error
+  if (error instanceof ValidationError) {
+    // Handle the error
+    res.status(400).send(error.validationErrors);
+    next();
+  } else {
+    // Pass error on if not a validation error
+    next(error);
+  }
+});
 
 const server = app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV}  mode on port ${PORT}`);
+  console.log(`Server running in ${ process.env.NODE_ENV }  mode on port ${ PORT }`);
 });
 
 //Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error: ${err.message}`);
-    //Close server & exit process
-    server.close(() => process.exit(1));
+  console.log(`Error: ${ err.message }`);
+  //Close server & exit process
+  server.close(() => process.exit(1));
 });

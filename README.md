@@ -1,5 +1,5 @@
 # SWPractice_TermProject
-Online Job Fair 
+Online Job Fair
 Group: Alice in wonderland
 API Only!
 
@@ -24,16 +24,19 @@ API Only!
 9. The system shall allow the admin to delete any interview session bookings.
 
 # Additional Requirement
-- The system shall comply with the Personal Data Protection Act (PDPA) to ensure that all personal data is collected, used, and disclosed in accordance with the requirements of the law.
-- The system shall automatically generate a unique Google Meet link for each scheduled meeting to enable participants to easily access the virtual meeting.
-- The system shall enable users to view the status of their job applications, including whether the application is under review, in progress, or has been rejected or accepted.
+1. The system shall comply with the Personal Data Protection Act (PDPA) to ensure that all personal data is collected,
+   used, and disclosed in accordance with the requirements of the law.
+2. The system shall automatically generate a unique Google Meet link for each scheduled meeting to enable participants
+   to easily access the virtual meeting.
+3. The system shall enable users to view the status of their job applications, including whether the application is
+   under review, in progress, or has been rejected or accepted.
 
 # Non-Functional Requirements
 - Security:
-  - The system shall authenticate users using username password. 
-  - The system shall be able to keep user’s transactions confidential. 
+  - The system shall authenticate users using username password.
+  - The system shall be able to keep user’s transactions confidential.
 - Performance:
-  - The system shall respond to a request in 3 seconds. 
+  - The system shall respond to a request in 3 seconds.
 - Usability:
   - The system shall be used and test via Postman.
 
