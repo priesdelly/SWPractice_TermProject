@@ -1,5 +1,4 @@
 # SWPractice_TermProject
-
 Online Job Fair 
 Group: Alice in wonderland
 API Only!
@@ -32,12 +31,11 @@ API Only!
 # Non-Functional Requirements
 - Security:
   - The system shall authenticate users using username password. 
-  - The system shall be able to keep user’s transactions 
-- confidential. 
-  - Performance:
-    - The system shall response to a request in 3 seconds. 
-    - Usability:
-    - The system shall be used and test via Postman.
+  - The system shall be able to keep user’s transactions confidential. 
+- Performance:
+  - The system shall respond to a request in 3 seconds. 
+- Usability:
+  - The system shall be used and test via Postman.
 
 # Constraints
 - The system shall be a web API.
