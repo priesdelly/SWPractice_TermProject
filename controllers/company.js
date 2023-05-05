@@ -1,5 +1,6 @@
 const Company = require('../models/Company');
-const User = require('../models/User');
+const Job = require('../models/Job');
+const Appointment = require('../models/Appointment');
 
 //@desc     Get company list
 //@route    get /api/v1/company
@@ -124,7 +125,8 @@ exports.update = async (req, res, next) => {
 //@access   Private
 exports.del = async (req, res, next) => {
   try {
-    const company = await Company.findByIdAndUpdate(req.params.id, {
+    const companyId = req.params.id;
+    const company = await Company.findByIdAndUpdate(companyId, {
       "function": "D"
     });
     if (!company) {
@@ -134,9 +136,13 @@ exports.del = async (req, res, next) => {
       });
     }
 
-    //TODO
-    // - change all job to D
-    // - change all appointment to D
+    const jobs = await Job.find({ companyId: companyId });
+    await Job.updateMany({ companyId: req.params.id }, { "function": "D" });
+
+    for (let i = 0; i < jobs.length; i++) {
+      let jobId = jobs[i].jobId;
+      await Appointment.updateMany({ jobId: jobId }, { "function": "D" });
+    }
 
     res.status(200).json({
       success: true,

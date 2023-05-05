@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const Company = require("../models/Company");
+const Appointment = require("../models/Appointment");
+const crypto = require("crypto");
 
 //@desc     Get list user
 //@route    GET /api/v1/user/
@@ -98,3 +100,38 @@ exports.update = async (req, res, next) => {
   }
 };
 
+//@desc     Delete user
+//@route    DELETE /api/v1/user/:id
+//@access   Private
+exports.del = async (req, res, next) => {
+  try {
+    const userId = req.params.id;
+    const uuid = crypto.randomUUID();
+    const user = await User.findByIdAndUpdate(userId, {
+      "name": uuid,
+      "email": `${ uuid }@gmail.com`,
+      "tel": "0000000000",
+      "function": "D"
+    }, {
+      new: true,
+      runValidators: false,
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false });
+    }
+
+    await Appointment.updateMany({ userId: userId }, { "function": "D" });
+
+    res.status(200).json({
+      success: true,
+      data: {}
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      success: false,
+      message: "Can't delete user"
+    });
+  }
+};

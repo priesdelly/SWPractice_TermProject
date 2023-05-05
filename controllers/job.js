@@ -1,5 +1,6 @@
 const Job = require("../models/Job");
 const Company = require("../models/Company");
+const Appointment = require("../models/Appointment");
 
 const CACHE_TIME = 60;
 
@@ -130,12 +131,15 @@ exports.del = async (req, res, next) => {
     const job = await Job.findByIdAndUpdate(req.params.id, {
       "function": "D"
     });
+
     if (!job) {
       return res.status(400).json({
         success: false,
         msg: 'Invalid job identify'
       });
     }
+
+    const appointments = await Appointment.updateMany({ "jobId": req.params.id }, { "function": "D" });
 
     res.status(200).json({
       success: true,

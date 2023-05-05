@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const crypto = require('crypto');
+const Appointment = require("../models/Appointment");
 
 //@desc     Register user
 //@route    POST /api/v1/auth/register
@@ -119,8 +120,9 @@ exports.logout = async (req, res, next) => {
 //@access   Private
 exports.deleteMe = async (req, res, next) => {
   try {
-    let uuid = crypto.randomUUID();
-    const user = await User.findByIdAndUpdate(req.user.id, {
+    const userId = req.params.id;
+    const uuid = crypto.randomUUID();
+    const user = await User.findByIdAndUpdate(userId, {
       "name": uuid,
       "email": `${ uuid }@gmail.com`,
       "tel": "0000000000",
@@ -139,8 +141,7 @@ exports.deleteMe = async (req, res, next) => {
       httpOnly: true
     });
 
-    //TODO
-    //Delete all user's appointment data
+    await Appointment.updateMany({ userId: userId }, { "function": "D" });
 
     return res.status(200).json({
       success: true
