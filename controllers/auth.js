@@ -120,7 +120,7 @@ exports.logout = async (req, res, next) => {
 //@access   Private
 exports.deleteMe = async (req, res, next) => {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const uuid = crypto.randomUUID();
     const user = await User.findByIdAndUpdate(userId, {
       "name": uuid,
