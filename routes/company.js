@@ -36,12 +36,27 @@ const companyRegisterSchemaRequest = {
   }
 }
 
-const staffSchemaRequest = {
+const companyUpdateSchemaRequest = {
   type: 'object',
-  required: [ 'userId' ],
   properties: {
-    userId: {
+    name: {
       type: 'string'
+    },
+    address: {
+      type: 'string'
+    },
+    desc: {
+      type: 'string'
+    },
+    website: {
+      type: 'string'
+    },
+    tel: {
+      type: 'string'
+    },
+    function: {
+      type: 'string',
+      enum: [ 'A', 'D' ]
     }
   }
 }
@@ -54,7 +69,7 @@ router.route("/")
 
 router.route("/:id")
   .get(detail)
-  .put(validate({ body: companyRegisterSchemaRequest }), protect, authorize('admin'), update)
+  .put(validate({ body: companyUpdateSchemaRequest }), protect, authorize('admin'), update)
   .delete(protect, authorize('admin'), del);
 
 module.exports = router;
