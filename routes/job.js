@@ -44,7 +44,7 @@ const { validate } = new Validator();
 
 router.route("/")
   .get(list)
-  .post(validate({ body: jobRegisterSchemaRequest }), protect, add);
+  .post(validate({ body: jobRegisterSchemaRequest }), protect, authorize('admin'), add);
 
 router.route('/:id')
   .get(detail)
