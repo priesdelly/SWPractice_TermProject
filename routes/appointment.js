@@ -29,17 +29,26 @@ const appointmentUpdateSchemaRequest = {
   }
 }
 
+const appointmentUpdateStatusSchemaRequest = {
+  type: 'object',
+  required: [ 'applyStatus' ],
+  properties: {
+    applyStatus: {
+      type: 'string',
+      enum: [ 'in progress', 'rejected', 'accepted' ]
+    }
+  }
+}
+
 const { validate } = new Validator();
 
 router.post('/booking', validate({ body: appointmentBookingSchemaRequest }), protect, authorize('user'), booking);
-
 router.get('/', protect, list);
-
 router.route("/:id")
   .get(protect, appointmentOwner, detail)
   .put(validate({ body: appointmentUpdateSchemaRequest }), protect, appointmentOwner, update)
   .delete(protect, appointmentOwner, del)
 
-router.put("/:id/status", protect, authorize('admin'), updateStatus);
+router.put("/:id/status", validate({ body: appointmentUpdateStatusSchemaRequest }), protect, authorize('admin'), updateStatus);
 
 module.exports = router;

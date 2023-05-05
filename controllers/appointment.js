@@ -13,7 +13,7 @@ exports.booking = async (req, res, next) => {
   try {
     const { jobId, time } = req.body;
     const userId = req.user.id;
-    const applyStatus = "pending";
+    const applyStatus = "in progress";
 
     //Check is valid time format
     if (!moment(time, moment.ISO_8601, true).isValid()) {
