@@ -13,7 +13,6 @@ const {
 const router = express.Router();
 
 const { protect, authorize } = require('../middleware/auth');
-const { companyStaff } = require("../middleware/company");
 
 const companyRegisterSchemaRequest = {
   type: 'object',
@@ -55,12 +54,7 @@ router.route("/")
 
 router.route("/:id")
   .get(detail)
-  .put(validate({ body: companyRegisterSchemaRequest }), protect, companyStaff, update)
+  .put(validate({ body: companyRegisterSchemaRequest }), protect, authorize('admin'), update)
   .delete(protect, authorize('admin'), del);
-
-router.route("/:id/staff")
-  .get(protect, companyStaff, getStaff)
-  .post(validate({ body: staffSchemaRequest }), protect, authorize('admin'), addStaff)
-  .delete(validate({ body: staffSchemaRequest }), protect, authorize('admin'), deleteStaff);
 
 module.exports = router;

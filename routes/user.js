@@ -1,24 +1,32 @@
 const express = require('express');
 const { Validator } = require("express-json-validator-middleware");
-const { profile, updateRole, addStaff } = require('../controllers/user');
+const { list, detail, update, addStaff } = require('../controllers/user');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
 
 const userRoleSchemaRequest = {
   type: 'object',
-  required: [ 'role' ],
   properties: {
+    name: {
+      type: 'string'
+    },
     role: {
       type: 'string',
       enum: [ 'user', 'admin' ]
+    },
+    function: {
+      type: 'string',
+      enum: [ 'A', 'D' ]
     }
   }
 }
 
 const { validate } = new Validator();
 
+router.get("/", protect, authorize('admin'), list);
+
 router.route("/:id")
-  .get(protect, authorize('admin'), profile)
-  .put(validate({ body: userRoleSchemaRequest }), protect, authorize('admin'), updateRole);
+  .get(protect, authorize('admin'), detail)
+  .put(validate({ body: userRoleSchemaRequest }), protect, authorize('admin'), update);
 
 module.exports = router;

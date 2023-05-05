@@ -4,7 +4,6 @@ const { list, detail, add, update, del } = require('../controllers/job');
 const router = express.Router();
 
 const { protect, authorize } = require('../middleware/auth');
-const { companyStaff } = require("../middleware/company");
 
 const jobRegisterSchemaRequest = {
   type: 'object',
@@ -45,11 +44,11 @@ const { validate } = new Validator();
 
 router.route("/")
   .get(list)
-  .post(validate({ body: jobRegisterSchemaRequest }), protect, companyStaff, add);
+  .post(validate({ body: jobRegisterSchemaRequest }), protect, add);
 
 router.route('/:id')
   .get(detail)
-  .put(validate({ body: jobUpdateSchemaRequest }), protect, companyStaff, update)
-  .delete(protect, companyStaff, del);
+  .put(validate({ body: jobUpdateSchemaRequest }), protect, authorize('admin'), update)
+  .delete(protect, authorize('admin'), del);
 
 module.exports = router;

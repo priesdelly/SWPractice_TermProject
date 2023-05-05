@@ -1,12 +1,14 @@
 const Job = require("../models/Job");
 const Company = require("../models/Company");
 
+const CACHE_TIME = 60;
+
 //@desc     Get job list
 //@route    GET /api/v1/job/
 //@access   Public
 exports.list = async (req, res, next) => {
   const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-  const limit = 5;
+  const limit = 10;
   const skip = (page - 1) * limit;
 
   try {
@@ -17,7 +19,7 @@ exports.list = async (req, res, next) => {
       .exec();
 
     for (let i = 0; i < jobs.length; i++) {
-      jobs[i].companyDetail = await Company.findById(jobs[i].companyId).cache(60 * 5);
+      jobs[i].companyDetail = await Company.findById(jobs[i].companyId).cache(CACHE_TIME);
     }
 
     const count = await Job.countDocuments({
