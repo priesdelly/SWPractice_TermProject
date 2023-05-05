@@ -159,7 +159,9 @@ exports.detail = async (req, res, next) => {
 
     const appointment = appointments[0];
     appointment.jobDetail = await Job.findById(appointment.jobId).cache(CACHE_TIME);
-    appointment.userDetail = await User.findById(appointment.userId).cache(CACHE_TIME);
+    if (req.user.role === "admin") {
+      appointment.userDetail = await User.findById(appointment.userId).cache(CACHE_TIME);
+    }
     appointment.jobDetail.companyDetail = await Company.findById(appointment.jobDetail.companyId).cache(CACHE_TIME);
 
     return res.status(200).json({
