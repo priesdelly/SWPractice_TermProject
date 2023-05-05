@@ -26,6 +26,16 @@ const JobSchema = new mongoose.Schema({
     default: 'A',
     select: false,
   },
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true },
+});
+
+JobSchema.virtual('companyDetail', {
+  ref: 'Company',
+  localField: '_id',
+  foreignField: 'companyId',
+  justOne: true,
 });
 
 JobSchema.index({ companyId: 1, name: 1 }, { unique: true });

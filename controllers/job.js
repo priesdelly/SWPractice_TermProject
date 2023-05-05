@@ -6,7 +6,7 @@ const Company = require("../models/Company");
 //@access   Public
 exports.list = async (req, res, next) => {
   const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-  const limit = 10;
+  const limit = 5;
   const skip = (page - 1) * limit;
 
   try {
@@ -15,6 +15,10 @@ exports.list = async (req, res, next) => {
     }).skip(skip)
       .limit(limit)
       .exec();
+
+    for (let i = 0; i < jobs.length; i++) {
+      jobs[i].companyDetail = await Company.findById(jobs[i].companyId).cache(60 * 5);
+    }
 
     const count = await Job.countDocuments({
       "function": "A"
@@ -52,6 +56,8 @@ exports.detail = async (req, res, next) => {
         success: false
       });
     }
+
+    jobs[0].companyDetail = await Company.findById(jobs[0].companyId);
 
     return res.status(200).json({
       success: true,

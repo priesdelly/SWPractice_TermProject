@@ -1,6 +1,4 @@
 const Staff = require('../models/Staff');
-const Company = require("../models/Company");
-const User = require("../models/User");
 
 exports.companyStaff = async (req, res, next) => {
   try {
@@ -33,4 +31,4 @@ exports.companyStaff = async (req, res, next) => {
       message: 'Not authorize to access route'
     });
   }
-}
+};

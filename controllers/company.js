@@ -8,7 +8,7 @@ const Staff = require('../models/Staff');
 exports.list = async (req, res, next) => {
 
   const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
-  const limit = 10;
+  const limit = 5;
   const skip = (page - 1) * limit;
 
   try {
@@ -22,7 +22,7 @@ exports.list = async (req, res, next) => {
       "function": "A"
     });
 
-    return res.json({
+    return res.status(200).json({
       success: true,
       pagination: {
         currentPage: page,
