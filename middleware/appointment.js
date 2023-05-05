@@ -1,31 +1,4 @@
 const Appointment = require('../models/Appointment');
-const Job = require("../models/Job");
-
-const CACHE_TIME = 60;
-
-async function checkIsCompanyStaff(appointmentId, userId) {
-  const appointment = await Appointment.findById(appointmentId).cache(CACHE_TIME);
-  if (!appointment) {
-    return false;
-  }
-
-  const jobId = appointment.jobId;
-  const job = await Job.findById(jobId).cache(CACHE_TIME);
-  if (!job) {
-    return false;
-  }
-
-  const staff = await Staff.find({
-    "companyId": job.companyId,
-    "userId": userId,
-  });
-
-  if (staff.length === 0) {
-    return false;
-  }
-
-  return true;
-}
 
 exports.appointmentOwner = async (req, res, next) => {
   try {

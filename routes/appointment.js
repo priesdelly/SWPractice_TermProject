@@ -29,7 +29,6 @@ const appointmentUpdateSchemaRequest = {
   }
 }
 
-
 const { validate } = new Validator();
 
 router.post('/booking', validate({ body: appointmentBookingSchemaRequest }), protect, authorize('user'), booking);
