@@ -2,10 +2,48 @@ const Company = require('../models/Company');
 const User = require('../models/User');
 const Staff = require('../models/Staff');
 
+//@desc     Get company list
+//@route    get /api/v1/company
+//@access   Private
+exports.list = async (req, res, next) => {
+
+  const page = parseInt(req.query.page) > 0 ? parseInt(req.query.page) : 1;
+  const limit = 10;
+  const skip = (page - 1) * limit;
+
+  try {
+    const company = await Company.find({
+      "function": "A"
+    }).skip(skip)
+      .limit(limit)
+      .exec();
+
+    const count = await Company.countDocuments({
+      "function": "A"
+    });
+
+    return res.json({
+      success: true,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(count / limit),
+        totalItems: count,
+        itemsPerPage: limit
+      },
+      data: company,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      success: false
+    });
+  }
+};
+
 //@desc     Register company
 //@route    POST /api/v1/company/register
 //@access   Private
-exports.register = async (req, res, next) => {
+exports.add = async (req, res, next) => {
   try {
     const { name, address, desc, website, tel } = req.body;
     const company = await Company.create({
@@ -16,17 +54,22 @@ exports.register = async (req, res, next) => {
       tel,
     });
 
-    res.status(201).json({ success: true, data: company });
+    res.status(201).json({
+      success: true,
+      data: company
+    });
   } catch (err) {
     console.log(err);
-    res.status(400).json({ success: false });
+    res.status(400).json({
+      success: false
+    });
   }
 };
 
 //@desc     Get company profile
 //@route    GET /api/v1/company/:id
 //@access   Public
-exports.getCompanyProfile = async (req, res, next) => {
+exports.detail = async (req, res, next) => {
   try {
     const companyId = req.params.id;
     const company = await Company.find({
@@ -35,7 +78,9 @@ exports.getCompanyProfile = async (req, res, next) => {
     });
 
     if (company.length === 0) {
-      return res.status(404);
+      return res.status(404).json({
+        success: false
+      });
     }
 
     return res.status(200).json({
@@ -43,7 +88,7 @@ exports.getCompanyProfile = async (req, res, next) => {
       data: company[0]
     });
   } catch (err) {
-    console.log(err.stack);
+    console.log(err);
     res.status(500);
   }
 };
@@ -51,7 +96,7 @@ exports.getCompanyProfile = async (req, res, next) => {
 //@desc     Update company profile
 //@route    PUT /api/v1/company/:id
 //@access   Private
-exports.updateCompanyProfile = async (req, res, next) => {
+exports.update = async (req, res, next) => {
   try {
     const company = await Company.findByIdAndUpdate(req.params.id, req.body);
 
@@ -78,7 +123,7 @@ exports.updateCompanyProfile = async (req, res, next) => {
 //@desc     Delete company profile
 //@route    Delete /api/v1/company/:id
 //@access   Private
-exports.deleteCompanyProfile = async (req, res, next) => {
+exports.del = async (req, res, next) => {
   try {
     const company = await Company.findByIdAndUpdate(req.params.id, {
       "function": "D"

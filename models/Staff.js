@@ -11,8 +11,11 @@ const StaffSchema = new mongoose.Schema({
     ref: 'Company',
     required: [ true, 'Please add a company id' ]
   },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 StaffSchema.index({ userId: 1, companyId: 1 }, { unique: true });
-
 module.exports = mongoose.model('Staff', StaffSchema);

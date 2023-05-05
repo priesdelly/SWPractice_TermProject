@@ -9,7 +9,7 @@ exports.companyStaff = async (req, res, next) => {
       return next();
     }
 
-    const companyId = req.params.id;
+    const companyId = req.params.id || req.body.companyId || 0;
     const userId = req.user.id;
 
     const staff = await Staff.find({

@@ -22,7 +22,8 @@ connectDB();
 const auth = require("./routes/auth");
 const user = require("./routes/user");
 const company = require("./routes/company");
-
+const job = require("./routes/job");
+const appointment = require("./routes/appointment");
 
 const app = express();
 
@@ -46,13 +47,14 @@ app.use(helmet());
 //Prevent XSS attacks
 app.use(xss());
 
-//Rate Limiting
-const limiter = rateLimit({
-  windowsMs: 10 * 60 * 1000, //10 mins
-  max: 100
-});
-
-app.use(limiter);
+if (process.env.NODE_ENV === 'production') {
+  //Rate Limiting
+  const limiter = rateLimit({
+    windowsMs: 10 * 60 * 1000, //10 minutes
+    max: 100
+  });
+  app.use(limiter);
+}
 
 //Prevent http param pollutions
 app.use(hpp());
@@ -63,6 +65,8 @@ const PORT = process.env.PORT || 5002;
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/user", user);
 app.use("/api/v1/company", company);
+app.use("/api/v1/job", job);
+app.use("/api/v1/appointment", appointment);
 
 app.use((error, req, res, next) => {
   // Check the error is a validation error

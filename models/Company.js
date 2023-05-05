@@ -18,6 +18,10 @@ const CompanySchema = new mongoose.Schema({
   tel: {
     type: String,
   },
+  createAt: {
+    type: Date,
+    default: Date.now,
+  },
   function: {
     type: String,
     default: 'A',

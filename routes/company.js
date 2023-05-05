@@ -1,10 +1,11 @@
 const express = require('express');
 const { Validator } = require("express-json-validator-middleware");
 const {
-  register,
-  getCompanyProfile,
-  updateCompanyProfile,
-  deleteCompanyProfile,
+  list,
+  detail,
+  add,
+  update,
+  del,
   getStaff,
   addStaff,
   deleteStaff
@@ -13,7 +14,6 @@ const router = express.Router();
 
 const { protect, authorize } = require('../middleware/auth');
 const { companyStaff } = require("../middleware/company");
-const { del } = require("express/lib/application");
 
 const companyRegisterSchemaRequest = {
   type: 'object',
@@ -49,11 +49,14 @@ const staffSchemaRequest = {
 
 const { validate } = new Validator();
 
-router.post("/register", validate({ body: companyRegisterSchemaRequest }), protect, authorize('admin'), register)
+router.route("/")
+  .get(list)
+  .post(validate({ body: companyRegisterSchemaRequest }), protect, authorize('admin'), add)
+
 router.route("/:id")
-  .get(getCompanyProfile)
-  .put(validate({ body: companyRegisterSchemaRequest }), protect, companyStaff, updateCompanyProfile)
-  .delete(protect, authorize('admin'), deleteCompanyProfile);
+  .get(detail)
+  .put(validate({ body: companyRegisterSchemaRequest }), protect, companyStaff, update)
+  .delete(protect, authorize('admin'), del);
 
 router.route("/:id/staff")
   .get(protect, companyStaff, getStaff)
